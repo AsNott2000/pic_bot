@@ -1,0 +1,26 @@
+# Gizli bilgiler - ASLA push'lama!
+.env
+
+# Python cache dosyaları
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+venv/
+env/
+.venv/
+
+# IDE dosyaları
+.vscode/
+.idea/
+*.code-workspace
+
+# Log dosyaları
+*.log
+
+# OS dosyaları
+.DS_Store
+Thumbs.db
