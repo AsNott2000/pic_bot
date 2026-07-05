@@ -29,6 +29,7 @@ jobs:
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/pic_bot:latest
 
+          
       # 4. EC2'ya SSH ile bağlan ve deploy et
       - name: EC2'ya deploy et
         uses: appleboy/ssh-action@v1.2.2
