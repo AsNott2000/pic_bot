@@ -310,7 +310,6 @@ git add Dockerfile docker-compose.yml requirements.txt .github/
 git commit -m "feat: docker + ci/cd pipeline eklendi"
 git push origin main
 ```
-
 Push yapılınca GitHub Actions otomatik olarak:
 1. Image'ı build eder
 2. Docker Hub'a push eder
