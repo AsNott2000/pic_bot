@@ -1,0 +1,75 @@
+name: Deploy Discord Bot to EC2
+
+on:
+  push:
+    branches:
+      - main        # main branch'e push yapılınca tetiklenir
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Kodu çek
+      - name: Kodu checkout et
+        uses: actions/checkout@v4
+
+      # 2. Docker Hub'a giriş yap
+      - name: Docker Hub'a giriş
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      # 3. Docker image oluştur ve push et
+      - name: Image oluştur ve push et
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKER_USERNAME }}/pic_bot:latest
+
+      # 4. EC2'ya SSH ile bağlan ve deploy et
+      - name: EC2'ya deploy et
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            mkdir -p /home/ubuntu/pic_bot
+            cd /home/ubuntu/pic_bot
+
+            # .env dosyasını EC2'da oluştur
+            cat > .env << EOF
+            DISCORD_TOKEN=${{ secrets.DISCORD_TOKEN }}
+            KANAL_ID=${{ secrets.KANAL_ID }}
+            KICK_KULLANICI_ADI=${{ secrets.KICK_KULLANICI_ADI }}
+            EOF
+
+            # docker-compose.yml dosyasını güncelle
+            cat > docker-compose.yml << EOF
+            version: "3.9"
+            services:
+              pic_bot:
+                image: ${{ secrets.DOCKER_USERNAME }}/pic_bot:latest
+                container_name: pic_bot
+                restart: unless-stopped
+                env_file:
+                  - .env
+                environment:
+                  - PYTHONUNBUFFERED=1
+                shm_size: '256mb'
+            EOF
+
+            # En son image'ı çek
+            docker pull ${{ secrets.DOCKER_USERNAME }}/pic_bot:latest
+
+            # Eski container'ı durdur ve yeni başlat
+            docker compose down || true
+            docker compose up -d
+
+            # Eski image'ları temizle (disk tasarrufu)
+            docker image prune -f
+
+            echo "Deploy tamamlandi!"
