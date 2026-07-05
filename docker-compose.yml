@@ -1,0 +1,12 @@
+version: "3.9"
+
+services:
+  pic_bot:
+    image: ${DOCKER_USERNAME}/pic_bot:latest
+    container_name: pic_bot
+    restart: unless-stopped          # Crash olursa otomatik yeniden başlar
+    env_file:
+      - .env                         # Gizli değişkenleri .env'den okur
+    environment:
+      - PYTHONUNBUFFERED=1           # Logları anlık görmek için
+    shm_size: '256mb'               # Selenium/Chrome için paylaşımlı bellek
