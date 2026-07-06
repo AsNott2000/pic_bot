@@ -44,6 +44,7 @@ yayin_durumu = "offline"
 def kick_durumunu_al(kullanici_adi: str) -> str:
     """
     Kick sayfasını Selenium ile açar.
+    
     - Offline iken: h2 elementi bulunur, "cevrim disi" içerir → "OFFLINE" döner
     - Yayında iken: h2 elementi YOKTUR (sayfa tamamen değişir) → "CANLI" döner
     - Hata durumunda: boş string döner
