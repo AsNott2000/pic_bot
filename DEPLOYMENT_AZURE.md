@@ -202,7 +202,7 @@ az acr create `
 Çıktıdan `loginServer` değerini kopyala — ileride lazım olacak:
 ```json
 {
-  "loginServer": "picbotregistry.azurecr.io",
+  "loginServer": "picbotregistry.azurecr.io", picbotregistry.azurecr.io
   ...
 }
 ```
@@ -217,10 +217,7 @@ az acr credential show --name picbotregistry
 Çıktı:
 ```json
 {
-  "passwords": [
-    { "name": "password",  "value": "XXXXXXXXXXXXXXXXXX" },
-    { "name": "password2", "value": "YYYYYYYYYYYYYYYYYY" }
-  ],
+  "passwords": [                 {                                                                                         "name": "password",                                                                               "value": "5MUQoQ9K5u371hvZUtkcScZGDa91kLLp0xSJxex9WbH9aYGWquKtJQQJ99CGACfhMk5Eqg7NAAACAZCRQBk6"    },                                                                                                                      {                                                                                         "name": "password2",                                                                              "value": "5D93JA1DjGrffRhHGAA0YgnkMEu3t8JBmSXFyz1AePuZsWnWLnN9JQQJ99CGACfhMk5Eqg7NAAACAZCRtizQ"    }],
   "username": "picbotregistry"
 }
 ```
@@ -368,24 +365,7 @@ docker push picbotregistry.azurecr.io/pic-bot:latest
 Şimdi Azure Container Apps'te botu çalıştır. **Token ve diğer gizli bilgileri buraya gir:**
 
 ```powershell
-az containerapp create `
-  --name pic-bot `
-  --resource-group pic-bot-rg `
-  --environment pic-bot-env `
-  --image picbotregistry.azurecr.io/pic-bot:latest `
-  --registry-server picbotregistry.azurecr.io `
-  --registry-username picbotregistry `
-  --registry-password "ACR_SIFREN_BURAYA" `
-  --cpu 0.5 `
-  --memory 1.0Gi `
-  --min-replicas 1 `
-  --max-replicas 1 `
-  --env-vars `
-    DISCORD_TOKEN="DISCORD_TOKEN_BURAYA" `
-    KANAL_ID="KANAL_ID_BURAYA" `
-    KICK_KULLANICI_ADI="KICK_KULLANICI_ADI_BURAYA" `
-    CHROMEDRIVER_PATH="/usr/bin/chromedriver"
-```
+az containerapp create --name pic-bot --resource-group pic-bot-rg --environment pic-bot-env --image picbotregistry.azurecr.io/pic-bot:latest --registry-server picbotregistry.azurecr.io --registry-username picbotregistry --registry-password"5MUQoQ9K5u371hvZUtkcScZGDa91kLLp0xSJxex9WbH9aYGWquKtJQQJ99CGACfhMk5Eqg7NAAACAZCRQBk6" --cpu 0.5 --memory 1.0Gi --min-replicas 1 --max-replicas 1 --env-vars DISCORD_TOKEN="MTUxOTYyNTI3MDMzMDY1NDczMA.GO8SOZbzk9-gWsUn8OEyFIOX4Nkb-7KM4XljAaE3lFSg" KANAL_ID="1012713692510556210" KICK_KULLANICI_ADI="picubclear" CHROMEDRIVER_PATH="/usr/bin/chromedriver"
 
 **Parametreler açıklaması:**
 
