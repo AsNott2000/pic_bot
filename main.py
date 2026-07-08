@@ -179,7 +179,7 @@ def youtube_son_videoyu_al(kanal_id: str):
 
 
 # --- 10 DAKİKADA BİR YOUTUBE KONTROL DÖNGÜSÜ ---
-@tasks.loop(minutes=10)
+@tasks.loop(minutes=0.5)
 async def youtube_kontrol_dongusu():
     global son_youtube_video_id
 
