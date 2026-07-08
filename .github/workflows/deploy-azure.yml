@@ -1,0 +1,76 @@
+name: 🔵 Deploy to Azure Container Apps
+
+# main branch'e push yapılınca otomatik tetiklenir
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    name: Build & Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      # ─────────────────────────────────────────────
+      # ADIM 1: Kodu çek
+      # ─────────────────────────────────────────────
+      - name: 📥 Kodu checkout et
+        uses: actions/checkout@v4
+
+      # ─────────────────────────────────────────────
+      # ADIM 2: Azure'a giriş yap
+      # ─────────────────────────────────────────────
+      - name: 🔑 Azure'a giriş yap
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      # ─────────────────────────────────────────────
+      # ADIM 3: Azure Container Registry'ye giriş yap
+      # ─────────────────────────────────────────────
+      - name: 🐳 ACR'ye giriş yap
+        uses: azure/docker-login@v1
+        with:
+          login-server: ${{ secrets.ACR_LOGIN_SERVER }}
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+
+      # ─────────────────────────────────────────────
+      # ADIM 4: Docker image oluştur ve ACR'ye push et
+      # ─────────────────────────────────────────────
+      - name: 🔨 Docker image oluştur ve push et
+        run: |
+          docker build -t ${{ secrets.ACR_LOGIN_SERVER }}/pic-bot:latest .
+          docker push ${{ secrets.ACR_LOGIN_SERVER }}/pic-bot:latest
+
+      # ─────────────────────────────────────────────
+      # ADIM 5: Container Apps'i yeni image ile güncelle
+      # ─────────────────────────────────────────────
+      - name: 🚀 Azure Container Apps'e deploy et
+        run: |
+          az extension add --name containerapp --upgrade --yes
+
+          az containerapp update \
+            --name ${{ secrets.AZURE_CONTAINERAPP_NAME }} \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --image ${{ secrets.ACR_LOGIN_SERVER }}/pic-bot:latest \
+            --set-env-vars \
+              DISCORD_TOKEN="${{ secrets.DISCORD_TOKEN }}" \
+              KANAL_ID="${{ secrets.KANAL_ID }}" \
+              KICK_KULLANICI_ADI="${{ secrets.KICK_KULLANICI_ADI }}" \
+              CHROMEDRIVER_PATH="/usr/bin/chromedriver"
+
+          echo "✅ Deploy başarıyla tamamlandı!"
+
+      # ─────────────────────────────────────────────
+      # ADIM 6: Sonucu kontrol et
+      # ─────────────────────────────────────────────
+      - name: ✅ Deploy durumunu kontrol et
+        run: |
+          STATUS=$(az containerapp show \
+            --name ${{ secrets.AZURE_CONTAINERAPP_NAME }} \
+            --resource-group ${{ secrets.AZURE_RESOURCE_GROUP }} \
+            --query "properties.runningStatus" \
+            --output tsv)
+          echo "Container durumu: $STATUS"

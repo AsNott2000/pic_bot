@@ -444,10 +444,10 @@ az ad sp create-for-rbac `
 Çıktı şöyle görünecek — **tamamını kopyala** (süslü parantezler dahil):
 ```json
 {
-  "clientId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "clientSecret": "XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
-  "subscriptionId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
-  "tenantId": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx",
+  "clientId": "<YOUR_CLIENT_ID>",
+  "clientSecret": "<YOUR_CLIENT_SECRET>",
+  "subscriptionId": "<YOUR_SUBSCRIPTION_ID>",
+  "tenantId": "<YOUR_TENANT_ID>",
   "activeDirectoryEndpointUrl": "https://login.microsoftonline.com",
   "resourceManagerEndpointUrl": "https://management.azure.com/",
   "activeDirectoryGraphResourceId": "https://graph.windows.net/",
