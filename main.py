@@ -17,7 +17,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 from selenium.common.exceptions import NoSuchElementException
-from webdriver_manager.chrome import ChromeDriverManager
+
+# Azure Container Apps'te Dockerfile ile kurulan sabit ChromeDriver kullanılır.
+# Local geliştirme için CHROMEDRIVER_PATH env değişkeni tanımlanabilir.
+CHROMEDRIVER_PATH = os.getenv("CHROMEDRIVER_PATH", "/usr/bin/chromedriver")
 
 
 # Discord Botunun Ayarları
@@ -64,7 +67,7 @@ def kick_durumunu_al(kullanici_adi: str) -> str:
 
     driver = None
     try:
-        service = Service(ChromeDriverManager().install())
+        service = Service(CHROMEDRIVER_PATH)
         driver = webdriver.Chrome(service=service, options=chrome_options)
         driver.set_page_load_timeout(20)
         driver.get(url)

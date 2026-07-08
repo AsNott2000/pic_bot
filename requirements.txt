@@ -1,4 +1,3 @@
-# discord.py
-# selenium
-# webdriver-manager
-# python-dotenv
+discord.py
+selenium
+python-dotenv
