@@ -59,6 +59,8 @@ jobs:
               DISCORD_TOKEN="${{ secrets.DISCORD_TOKEN }}" \
               KANAL_ID="${{ secrets.KANAL_ID }}" \
               KICK_KULLANICI_ADI="${{ secrets.KICK_KULLANICI_ADI }}" \
+              YOUTUBE_KANAL_ID="${{ secrets.YOUTUBE_KANAL_ID }}" \
+              YOUTUBE_DUYURU_KANAL_ID="${{ secrets.YOUTUBE_DUYURU_KANAL_ID }}" \
               CHROMEDRIVER_PATH="/usr/bin/chromedriver"
 
           echo "✅ Deploy başarıyla tamamlandı!"
