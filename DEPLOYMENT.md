@@ -2,7 +2,7 @@
 
 > Bu rehber, `pic_bot` Discord botunu Docker ile paketleyip GitHub Actions üzerinden otomatik olarak AWS EC2'ya deploy etmeyi adım adım anlatır.
 
----
+--
 
 ## 📋 İçindekiler
 
