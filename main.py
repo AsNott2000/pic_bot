@@ -203,6 +203,7 @@ async def youtube_kontrol_dongusu():
         son_youtube_video_id = video_id
         print(f"[YouTube] Baslangic video ID kaydedildi: {video_id}")
         return
+        
 
     # Yeni video geldi mi?
     if video_id != son_youtube_video_id:
