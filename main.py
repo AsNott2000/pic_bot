@@ -1,7 +1,7 @@
 import sys
 import io
 import os
-import feedparser
+# import feedparser  # YouTube (devre disi)
 from dotenv import load_dotenv
 
 load_dotenv()  # .env dosyasını yükle
@@ -34,8 +34,8 @@ bot = commands.Bot(command_prefix="!", intents=INTENTS)
 TOKEN = os.getenv("DISCORD_TOKEN")
 KANAL_ID = int(os.getenv("KANAL_ID"))
 KICK_KULLANICI_ADI = os.getenv("KICK_KULLANICI_ADI")
-YOUTUBE_KANAL_ID = os.getenv("YOUTUBE_KANAL_ID")                          # UCxxx formatı
-YOUTUBE_DUYURU_KANAL_ID = int(os.getenv("YOUTUBE_DUYURU_KANAL_ID"))       # Duyuru yapılacak Discord kanalı
+# YOUTUBE_KANAL_ID = os.getenv("YOUTUBE_KANAL_ID")                          # UCxxx formatı
+# YOUTUBE_DUYURU_KANAL_ID = int(os.getenv("YOUTUBE_DUYURU_KANAL_ID"))       # Duyuru yapılacak Discord kanalı
 # --------------------------------
 
 # XPath: Offline iken gozuken h2 elementi
@@ -46,7 +46,7 @@ STATUS_XPATH = "/html/body/div[2]/div[2]/div[4]/main/div[1]/div[4]/h2"
 yayin_durumu = "offline"
 
 # YouTube: son görülen video ID'sini saklar (tekrar duyuru önlemek için)
-son_youtube_video_id = None
+# son_youtube_video_id = None  # YouTube (devre disi)
 
 
 # --- SELENIUM İLE KICK DURUM KONTROL FONKSİYONU ---
@@ -110,7 +110,7 @@ def kick_durumunu_al(kullanici_adi: str) -> str:
 async def on_ready():
     print(f"[BOT] {bot.user.name} basariyla aktif oldu!")
     kick_kontrol_dongusu.start()
-    youtube_kontrol_dongusu.start()
+    # youtube_kontrol_dongusu.start()  # YouTube (devre disi)
 
 
 # --- 5 DAKİKADA BİR ÇALIŞAN DÖNGÜ ---
@@ -154,78 +154,77 @@ async def kick_kontrol_dongusu():
         print(f"[{KICK_KULLANICI_ADI}] Durum degismedi: {yayin_durumu}")
 
 
-# --- YOUTUBE YENİ VİDEO KONTROL FONKSİYONU ---
-def youtube_son_videoyu_al(kanal_id: str):
-    """
-    YouTube RSS feed üzerinden kanalın en son videosunu çeker.
-    API key gerektirmez. (id, baslik, url, thumbnail) tuple döner.
-    Hata durumunda None döner.
-    """
-    rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={kanal_id}"
-    try:
-        feed = feedparser.parse(rss_url)
-        if not feed.entries:
-            print("[YouTube] RSS feed bos, video bulunamadi.")
-            return None
-        entry = feed.entries[0]
-        video_id = entry.get("yt_videoid", "")
-        baslik = entry.get("title", "Yeni Video")
-        url = entry.get("link", f"https://www.youtube.com/watch?v={video_id}")
-        thumbnail = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
-        return (video_id, baslik, url, thumbnail)
-    except Exception as e:
-        print(f"[YouTube Hata] RSS cekilirken hata: {e}")
-        return None
-
-
-# --- 10 DAKİKADA BİR YOUTUBE KONTROL DÖNGÜSÜ ---
-@tasks.loop(minutes=0.5)
-async def youtube_kontrol_dongusu():
-    global son_youtube_video_id
-
-    kanal = bot.get_channel(YOUTUBE_DUYURU_KANAL_ID)
-    if not kanal:
-        print("[YouTube] Duyuru kanali bulunamadi!")
-        return
-
-    loop = asyncio.get_event_loop()
-    sonuc = await loop.run_in_executor(None, youtube_son_videoyu_al, YOUTUBE_KANAL_ID)
-
-    if sonuc is None:
-        print("[YouTube] Video bilgisi alinamadi, atlanıyor.")
-        return
-
-    video_id, baslik, url, thumbnail = sonuc
-    print(f"[YouTube] Son video: {baslik} ({video_id})")
-
-    # İlk çalışmada sadece kaydet, duyuru yapma
-    if son_youtube_video_id is None:
-        son_youtube_video_id = video_id
-        print(f"[YouTube] Baslangic video ID kaydedildi: {video_id}")
-        return
-        
-
-    # Yeni video geldi mi?
-    if video_id != son_youtube_video_id:
-        son_youtube_video_id = video_id
-        print(f"[YouTube] Yeni video tespit edildi: {baslik}")
-
-        embed = discord.Embed(
-            title=f"🎬 Yeni Video: {baslik}",
-            url=url,
-            description="Kanalımızda yeni bir video yayınlandı! Hemen izle 👇",
-            color=discord.Color.red()
-        )
-        embed.set_image(url=thumbnail)
-        embed.set_footer(text="youtube.com/@bune2090")
-
-        await kanal.send(
-            content="@everyone 🔔 **Yeni YouTube videosu geldi!**",
-            embed=embed
-        )
-        print(f"[YouTube] Discord duyurusu gonderildi: {baslik}")
-    else:
-        print(f"[YouTube] Yeni video yok, durum degismedi.")
+# --- YOUTUBE YENİ VİDEO KONTROL FONKSİYONU --- (devre disi)
+# def youtube_son_videoyu_al(kanal_id: str):
+#     """
+#     YouTube RSS feed üzerinden kanalın en son videosunu çeker.
+#     API key gerektirmez. (id, baslik, url, thumbnail) tuple döner.
+#     Hata durumunda None döner.
+#     """
+#     rss_url = f"https://www.youtube.com/feeds/videos.xml?channel_id={kanal_id}"
+#     try:
+#         feed = feedparser.parse(rss_url)
+#         if not feed.entries:
+#             print("[YouTube] RSS feed bos, video bulunamadi.")
+#             return None
+#         entry = feed.entries[0]
+#         video_id = entry.get("yt_videoid", "")
+#         baslik = entry.get("title", "Yeni Video")
+#         url = entry.get("link", f"https://www.youtube.com/watch?v={video_id}")
+#         thumbnail = f"https://img.youtube.com/vi/{video_id}/maxresdefault.jpg"
+#         return (video_id, baslik, url, thumbnail)
+#     except Exception as e:
+#         print(f"[YouTube Hata] RSS cekilirken hata: {e}")
+#         return None
+#
+#
+# # --- 10 DAKİKADA BİR YOUTUBE KONTROL DÖNGÜSÜ ---
+# @tasks.loop(minutes=10)
+# async def youtube_kontrol_dongusu():
+#     global son_youtube_video_id
+#
+#     kanal = bot.get_channel(YOUTUBE_DUYURU_KANAL_ID)
+#     if not kanal:
+#         print("[YouTube] Duyuru kanali bulunamadi!")
+#         return
+#
+#     loop = asyncio.get_event_loop()
+#     sonuc = await loop.run_in_executor(None, youtube_son_videoyu_al, YOUTUBE_KANAL_ID)
+#
+#     if sonuc is None:
+#         print("[YouTube] Video bilgisi alinamadi, atlanıyor.")
+#         return
+#
+#     video_id, baslik, url, thumbnail = sonuc
+#     print(f"[YouTube] Son video: {baslik} ({video_id})")
+#
+#     # İlk çalışmada sadece kaydet, duyuru yapma
+#     if son_youtube_video_id is None:
+#         son_youtube_video_id = video_id
+#         print(f"[YouTube] Baslangic video ID kaydedildi: {video_id}")
+#         return
+#
+#     # Yeni video geldi mi?
+#     if video_id != son_youtube_video_id:
+#         son_youtube_video_id = video_id
+#         print(f"[YouTube] Yeni video tespit edildi: {baslik}")
+#
+#         embed = discord.Embed(
+#             title=f"🎬 Yeni Video: {baslik}",
+#             url=url,
+#             description="Kanalımızda yeni bir video yayınlandı! Hemen izle 👇",
+#             color=discord.Color.red()
+#         )
+#         embed.set_image(url=thumbnail)
+#         embed.set_footer(text="youtube.com/@bune2090")
+#
+#         await kanal.send(
+#             content="@everyone 🔔 **Yeni YouTube videosu geldi!**",
+#             embed=embed
+#         )
+#         print(f"[YouTube] Discord duyurusu gonderildi: {baslik}")
+#     else:
+#         print(f"[YouTube] Yeni video yok, durum degismedi.")
 
 
 # Botu başlat
